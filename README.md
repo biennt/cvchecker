@@ -17,8 +17,10 @@ ollama pull deepseek-r1:8b
 ```
 git clone https://github.com/biennt/cvchecker.git
 python -m venv cvchecker
+cvchecker\Scripts\activate
+cd cvchecker
 pip install -r requirements.txt
-python cvchecker
+python cvchecker.py
 ```
 4. Using your browser to access http://127.0.0.1:7860/
 
