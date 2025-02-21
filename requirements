@@ -1,0 +1,6 @@
+python-dotenv
+requests
+openai
+gradio
+ollama
+prettytable
