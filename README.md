@@ -21,6 +21,7 @@ pip install -r requirements.txt
 python cvchecker
 ```
 4. Using your browser to access http://127.0.0.1:7860/
+
 (sample CVs are provided in cvdocs directory, just copy and paste the content)
 
 Have fun!
