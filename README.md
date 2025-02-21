@@ -5,8 +5,9 @@ This is my own exercise when studying the course  [LLM Engineering: Master AI, L
 
 How to use (MS Windows):
 1. Install python for windows
-2. Install Ollama for windows (and pull some models, such as `llama3.1:8b`, `sailor2:8b`, `deepseek-r1:8b`)
-  From command line:
+2. Install Ollama for windows (and pull some models)
+
+From command line:
 ```
 ollama pull llama3.1:8b
 ollama pull sailor2:8b
