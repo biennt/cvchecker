@@ -35,3 +35,4 @@ python cvscanner.py cvdocs
 
 Run few times, do you see the different results between runs?
 
+TODO: Processing PDF, Word files..
