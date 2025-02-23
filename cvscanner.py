@@ -4,6 +4,7 @@ import re
 import requests
 from prettytable import PrettyTable
 from openai import OpenAI
+from pypdf import PdfReader
 
 system_message = {
     "role": "system",
@@ -27,27 +28,47 @@ def search_multiline(text, pattern):
             returnstr = line
     return returnstr
 
+def readpdf(cvfile):
+    response_text = ""
+    reader = PdfReader(cvfile)
+    for i in range(len(reader.pages)):
+        page = reader.pages[i]
+        text = page.extract_text()
+        print(text)
+        response_text += text
+    return response_text
+
+def readtxt(cvfile):
+    response_text = ""
+    with open(cvfile, 'r', encoding="utf-8") as file:
+        cvcontent = file.read()
+        response_text = cvcontent
+    return response_text
+
 def cvcheck(cvfile, model):
     returnstr = ""
-    if cvfile.endswith('.txt'):
-        with open(cvfile, 'r', encoding="utf-8") as file:
-            cvcontent = file.read()
-            messages = [system_message]
-            messages.append({"role":"user", "content":cvcontent})
-            stream = ollama_via_openai.chat.completions.create(model=model, messages=messages, stream=True)
-            response = ""
-            print(f"------------: AI {model} response for {cvfile}:------------")
-            for chunk in stream:
-                word = chunk.choices[0].delta.content or ''
-                response += word
-                print(word,end='')
-            print("")
-            pattern = "SCORE: "
-            returnstr = search_multiline(response, pattern)
-            print(f"Final answer is: {returnstr}")
-            print("------------: End of AI response :------------")
-    return returnstr
+    cvcontent = ""
 
+    if cvfile.endswith('.txt'):
+        cvcontent=readtxt(cvfile)
+    if cvfile.endswith('.pdf'):
+        cvcontent=readpdf(cvfile) 
+
+    messages = [system_message]
+    messages.append({"role":"user", "content":cvcontent})
+    stream = ollama_via_openai.chat.completions.create(model=model, messages=messages, stream=True)
+    response = ""
+    print(f"------------: AI {model} response for {cvfile}:------------")
+    for chunk in stream:
+        word = chunk.choices[0].delta.content or ''
+        response += word
+        print(word,end='')
+    print("")
+    pattern = "SCORE: "
+    returnstr = search_multiline(response, pattern)
+    print(f"Final answer is: {returnstr}")
+    print("------------: End of AI response :------------")
+    return returnstr
     
 def list_of_models():
     listofmodel = []

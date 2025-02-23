@@ -4,3 +4,4 @@ openai
 gradio
 ollama
 prettytable
+pypdf
