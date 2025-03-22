@@ -1,4 +1,4 @@
-Name: John
+Name: Peter
 Current job: Network Engineer
 Location: Singapore
 Skills: Computer Networking, Security, Linux, Windows

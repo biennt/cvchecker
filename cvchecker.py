@@ -7,7 +7,7 @@ system_message = {
                     It is your goal to evaluate the following resume, and provide me with a "Pass" or "Fail" response (only Pass or Fail, no other words or content), 
                      if the resume matches the type of candidate I'm looking for. The candidate I'm looking for must be fluent in Go, NodeJS, must know PSQL,
                      have at least 5 years of experience with software development, and have quite some cyber security knowledge, especially in the web field. 
-                     The candidate also has to be located in Asia. The resume to review is in user's prompt"""
+                     The candidate who is in Asia is a plus. The resume to review is in user's prompt"""
 }
 
 
@@ -35,5 +35,5 @@ def list_of_models():
 api_key = "ollama"
 base_url = "http://127.0.0.1:11434"
 ollama_via_openai  = OpenAI(base_url = base_url + "/v1", api_key = api_key)
-demo = gr.Interface(interface, [ gr.Dropdown(list_of_models(), label="Model", info="Select the LLM model to query"), gr.Textbox("cvcontent")], outputs="text", title="CV Checker")
-demo.launch()
+demo = gr.Interface(interface, [ gr.Dropdown(list_of_models(), label="Model", info="Select the LLM model to ask"), gr.Textbox("cvcontent")], outputs="text", title="Resume Checker")
+demo.launch(share=False)

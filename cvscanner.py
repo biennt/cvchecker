@@ -91,16 +91,18 @@ table = PrettyTable()
 table.field_names = ["File", "model", "result"]
 
 if len(sys.argv) < 2:
-    print("You need to provide the directory contains CV(s)")
+    cvdir = "cvdocs"
 else:
     cvdir=sys.argv[1]
-    print(f"Scanning the directory {cvdir}")
-    ollama_via_openai  = OpenAI(base_url=base_url + "/v1", api_key=api_key)
-    files = os.listdir(cvdir)
+
+print(f"Scanning the directory {cvdir}")
+ollama_via_openai  = OpenAI(base_url=base_url + "/v1", api_key=api_key)
+files = os.listdir(cvdir)
+
+for MODEL in list_of_models():
     for cvfile in files:
-        for MODEL in list_of_models():
-            chkresult = cvcheck(cvdir + "/" + cvfile, MODEL)
-            table.add_row([cvfile, MODEL, chkresult])
+        chkresult = cvcheck(cvdir + "/" + cvfile, MODEL)
+        table.add_row([cvfile, MODEL, chkresult])
 
 print("FINAL REPORT:")
 print(table)
