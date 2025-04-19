@@ -28,7 +28,7 @@ def readtxt(cvfile):
     return response_text
 
 MODEL = "gpt-4o-mini"
-db_name = "vector_db"
+
 
 load_dotenv(override=True)
 os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY', 'your-key-if-not-using-env')
@@ -55,17 +55,17 @@ for cvfile in files:
     page_content = cvcontent
     cv = cvclass(cvcontent, metadata)
     documents.append(cv)
-    print(cv.metadata)
+    #print(cv.metadata)
 
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 chunks = text_splitter.split_documents(documents)
 
-print(f"Total number of chunks: {len(chunks)}")
+#print(f"Total number of chunks: {len(chunks)}")
 
 embeddings = OpenAIEmbeddings()
+db_name = "vector_db"
 if os.path.exists(db_name):
     Chroma(persist_directory=db_name, embedding_function=embeddings).delete_collection()
-# Create vectorstore
 vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=db_name)
 print(f"Vectorstore created with {vectorstore._collection.count()} documents")
 
@@ -76,14 +76,14 @@ sample_embedding = collection.get(limit=1, include=["embeddings"])["embeddings"]
 dimensions = len(sample_embedding)
 print(f"There are {count:,} vectors with {dimensions:,} dimensions in the vector store")
 
-# create a new Chat with OpenAI
 llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 25})
-memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
 
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
 conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever, memory=memory)
 
 def chat(question, history):
     result = conversation_chain.invoke({"question": question})
     return result["answer"]
+
 view = gr.ChatInterface(chat, type="messages").launch()
