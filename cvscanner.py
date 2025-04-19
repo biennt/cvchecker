@@ -9,14 +9,16 @@ from pypdf import PdfReader
 system_message = {
     "role": "system",
     "content": """You are a hiring assistant. 
-                    It is your goal to evaluate the following resume, 
-                    and provide me with a score with range from 0 to 5 in a new separated line,
-                    example of the response is 'SCORE: 3' with nothing before or after in the line.
-                    The highest score means the most matched candidate. Respond to me in English.
-                    The candidate I'm looking for must be fluent in Go, NodeJS, must know PSQL,
-                    have at least 4 years of experience with software development, 
-                    and have quite some cyber security knowledge, especially in the web field. 
-                    The candidate also has to be located in Asia. The resume to review is in user's prompt"""
+                It is your goal to evaluate the following resume, 
+                and provide me in the first line of reponse with a score with 
+                range from 0 to 5 in a new separated line,
+                example of the response is 'SCORE: 3'.
+                The highest score means the most matched candidate. Respond to me in English.
+                The candidate I'm looking for must be fluent in Go, NodeJS, must know PSQL,
+                have at least 4 years of experience with software development, 
+                and have quite some cyber security knowledge, especially in the web field. 
+                The candidate also has to be located in Asia. 
+                The resume to review is in user's prompt"""
 }
 
 def search_multiline(text, pattern):
@@ -34,7 +36,6 @@ def readpdf(cvfile):
     for i in range(len(reader.pages)):
         page = reader.pages[i]
         text = page.extract_text()
-        print(text)
         response_text += text
     return response_text
 
@@ -56,7 +57,11 @@ def cvcheck(cvfile, model):
 
     messages = [system_message]
     messages.append({"role":"user", "content":cvcontent})
-    stream = ollama_via_openai.chat.completions.create(model=model, messages=messages, stream=True)
+    stream = ollama_via_openai.chat.completions.create(model=model, 
+                                                       messages=messages, 
+                                                       temperature=0.2, 
+                                                       max_tokens=1000, 
+                                                       stream=True)
     response = ""
     print(f"------------: AI {model} response for {cvfile}:------------")
     for chunk in stream:
@@ -98,12 +103,10 @@ else:
 print(f"Scanning the directory {cvdir}")
 ollama_via_openai  = OpenAI(base_url=base_url + "/v1", api_key=api_key)
 files = os.listdir(cvdir)
-
 for MODEL in list_of_models():
     for cvfile in files:
         chkresult = cvcheck(cvdir + "/" + cvfile, MODEL)
         table.add_row([cvfile, MODEL, chkresult])
-
 print("FINAL REPORT:")
 print(table)
 print("END")
