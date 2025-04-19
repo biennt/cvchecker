@@ -1,8 +1,0 @@
-Name: Peter
-Current job: Network Engineer
-Location: Singapore
-Skills: Computer Networking, Security, Linux, Windows
-Experience: 
-- 8 years as a network engineer for a System Integrator
-- 4 years in an IT distributor 
-- 5 years in F5 Networks - Singapore Office
